@@ -2,8 +2,13 @@ package com.algaworks.algafood.controller;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,11 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.assembler.CozinhaInputDisassembler;
+import com.algaworks.algafood.assembler.CozinhaModelAssembler;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+import com.algaworks.algafood.dto.CozinhaDTO;
+import com.algaworks.algafood.dto.input.CozinhaInputDTO;
 
 @RestController
 @RequestMapping("/cozinhas")
@@ -32,46 +41,46 @@ public class CozinhaController {
 	@Autowired
 	private CadastroCozinhaService cadastroCozinhaService;
 
-	@GetMapping
-	public List<Cozinha> listar() {
-		return cozinhaRepository.listar();
+	@Autowired
+	private CozinhaModelAssembler cozinhaModelAssembler;
 
+	@Autowired
+	private CozinhaInputDisassembler cozinhaInputDisassembler;
+
+	@GetMapping
+	public Page<CozinhaDTO> listar(@PageableDefault(size = 2) Pageable pageable) {
+		Page<Cozinha> cozinhaPage = cozinhaRepository.findAll(pageable);
+
+		List<CozinhaDTO> cozinhaDTO = cozinhaModelAssembler.toCollectionModel(cozinhaPage.getContent());
+
+		Page<CozinhaDTO> cozinhasDTOPage = new PageImpl<>(cozinhaDTO, pageable, cozinhaPage.getTotalElements());
+
+		return cozinhasDTOPage;
 	}
 
-	@GetMapping(value = "/{cozinhaId}")
-	public ResponseEntity<Cozinha> buscarporId(@PathVariable Long cozinhaId) {
-		Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
+	@GetMapping("/{cozinhaId}")
+	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
+		Cozinha cozinha = cadastroCozinhaService.buscarCozinha(cozinhaId);
 
-		if (cozinha != null) {
-			return ResponseEntity.ok(cozinha);
-		}
-
-		return ResponseEntity.notFound().build();
-
+		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-		return cadastroCozinhaService.salvar(cozinha);
+	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
+		Cozinha cozinha = cozinhaInputDisassembler.toDomainObject(cozinhaInput);
+		cozinha = cadastroCozinhaService.salvar(cozinha);
+
+		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
-	@PutMapping(value = "/{cozinhaId}")
-	public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
-		Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
+	@PutMapping("/{cozinhaId}")
+	public CozinhaDTO atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInput) {
+		Cozinha cozinhaAtual = cadastroCozinhaService.buscarCozinha(cozinhaId);
+		cozinhaInputDisassembler.copyToDomainObject(cozinhaInput, cozinhaAtual);
+		cozinhaAtual = cadastroCozinhaService.salvar(cozinhaAtual);
 
-		if (cozinhaAtual != null) {
-
-			// cozinhaAtual.setNome(cozinha.getNome()); segue a mesma coisa do BeanUtils
-			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-
-			cadastroCozinhaService.salvar(cozinhaAtual);
-			return ResponseEntity.ok(cozinhaAtual);
-
-		}
-
-		return ResponseEntity.notFound().build();
-
+		return cozinhaModelAssembler.toModel(cozinhaAtual);
 	}
 
 	@DeleteMapping(value = "/{cozinhaId}")

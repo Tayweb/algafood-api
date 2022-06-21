@@ -7,6 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
+import javax.validation.groups.ConvertGroup;
+
+import com.algaworks.algafood.core.validation.Groups;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +29,10 @@ public class Cidade {
 
 	@Column(nullable = false)
 	private String nome;
-	
+
+	@JsonIgnoreProperties(value = "nome", allowGetters = true)
+	@Valid
+	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
 	@ManyToOne
 	@JoinColumn(name = "estado_id", nullable = false)
 	private Estado estado;

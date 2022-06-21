@@ -1,16 +1,24 @@
 package com.algaworks.algafood.domain.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.query.Param;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 
-public interface RestauranteRepository {
+public interface RestauranteRepository
+		extends CustomJpaRepository<Restaurante, Long>, RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante> {
 
-	List<Restaurante> listar();
+	List<Restaurante> queryByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 
-	Restaurante buscar(Long id);
+	// @Query("from Restaurante where nome like %:nome% and cozinha.id = :id")
+	List<Restaurante> consultaPorNome(String nome, @Param("id") Long cozinha);
 
-	Restaurante salvar(Restaurante restaurante);
+	Optional<Restaurante> findFirstRestauranteByNomeContaining(String nome);
+	
+	
 
-	void remover(Restaurante restaurante);
 }
