@@ -1,7 +1,6 @@
 package com.algaworks.algafood.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class VendaDiaria {
 
-	private LocalDate data;
+	private String data;
 	private Long totalVendas;
 	private BigDecimal totalFaturado;
 }

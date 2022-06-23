@@ -91,9 +91,9 @@ SET session_replication_role = 'origin';
 
 insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
     endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
-    status,sub_total, taxa_frete, valor_total)
+    status,sub_total, taxa_frete, valor_total, data_criacao)
 values (1, 'bf0a4efc-ed05-11ec-8ea0-0242ac120002', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
-'CRIADO',298.90, 10, 308.90);
+'CRIADO',298.90, 10, 308.90, '22/06/2022');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (1, 1, 1, 1, 78.9, 78.9, null);
@@ -104,9 +104,9 @@ values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
 
 insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
         endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
-        status,  sub_total, taxa_frete, valor_total)
+        status,  sub_total, taxa_frete, valor_total, data_criacao)
 values (2, '7f84cfdc-ed05-11ec-8ea0-0242ac120002',4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
-'CRIADO',  79, 0, 79);
+'CRIADO',  79, 0, 79, '22/06/2022');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (3, 2, 6, 1, 79, 79, 'Ao ponto');
