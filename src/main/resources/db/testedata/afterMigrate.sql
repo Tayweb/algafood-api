@@ -12,6 +12,7 @@ delete from restaurante;
 delete from restaurante_forma_pagamento;
 delete from usuario;
 delete from usuario_grupo;
+delete from foto_produto;
 
 SET session_replication_role = 'origin';
 
