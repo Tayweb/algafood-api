@@ -36,7 +36,7 @@ insert into cidade (id, nome, estado_id) values (1, 'Uberlândia', 1);
 insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values (1,'Thai Gourmet', 10, 1, true, true, 2, '38400-999', 'Rua João Pinheiro', '1000', 'Centro');
 insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto) values (2,'Tuk tuk indiano', 29.90, 2, true,true);
 insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto) values (3,'Comida Nordestina', 0, 3, true, true);
-insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto) values (4,'Java Steakhouse', 12, 3, true,true );
+insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto) values (4,'Restaurante Comida Boa', 12, 3, true,true );
 insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto) values (5,'Lanchonete do Tio Sam', 11, 4, true,true );
 insert into restaurante (id,nome_restaurante, taxa_frete, cozinha_id, ativo, aberto) values (6,'Bar da Maria', 6, 2, true,true);
  
@@ -74,7 +74,8 @@ insert into usuario (id, nome, email, senha, data_cadastro) values
 (1, 'João da Silva', 'joao.ger@algafood.com', '123', '14/06/2022'),
 (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', '14/06/2022'),
 (3, 'José Souza', 'jose.aux@algafood.com', '123', '14/06/2022'),
-(4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', '14/06/2022');   
+(4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', '14/06/2022'),
+(5, 'Taina Fontes', 'fontestaina495@gmail.com', '123', '30/06/2022');  
 
 insert into usuario_grupo (usuario_id, grupo_id) values (1, 1), (1, 2), (2, 2);
 
@@ -106,8 +107,8 @@ values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
 insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
         endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
         status,  sub_total, taxa_frete, valor_total, data_criacao)
-values (2, '7f84cfdc-ed05-11ec-8ea0-0242ac120002',4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
-'CRIADO',  79, 0, 79, '22/06/2022');
+values (2, '7f84cfdc-ed05-11ec-8ea0-0242ac120002',4, 5, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+'CRIADO',  79, 10, 79, '22/06/2022');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (3, 2, 6, 1, 79, 79, 'Ao ponto');
