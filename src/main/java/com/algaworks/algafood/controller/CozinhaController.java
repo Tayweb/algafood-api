@@ -4,12 +4,14 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.assembler.CozinhaInputDisassembler;
 import com.algaworks.algafood.assembler.CozinhaModelAssembler;
+import com.algaworks.algafood.controller.openapi.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -32,8 +35,8 @@ import com.algaworks.algafood.dto.CozinhaDTO;
 import com.algaworks.algafood.dto.input.CozinhaInputDTO;
 
 @RestController
-@RequestMapping("/cozinhas")
-public class CozinhaController {
+@RequestMapping(value = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CozinhaController implements CozinhaControllerOpenApi {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
@@ -47,8 +50,9 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaInputDisassembler cozinhaInputDisassembler;
 
+	@Override
 	@GetMapping
-	public Page<CozinhaDTO> listar(@PageableDefault(size = 2) Pageable pageable) {
+	public Page<CozinhaDTO> listar(@ParameterObject @PageableDefault(size = 2) Pageable pageable) {
 		Page<Cozinha> cozinhaPage = cozinhaRepository.findAll(pageable);
 
 		List<CozinhaDTO> cozinhaDTO = cozinhaModelAssembler.toCollectionModel(cozinhaPage.getContent());
@@ -58,6 +62,7 @@ public class CozinhaController {
 		return cozinhasDTOPage;
 	}
 
+	@Override
 	@GetMapping("/{cozinhaId}")
 	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
 		Cozinha cozinha = cadastroCozinhaService.buscarCozinha(cozinhaId);
@@ -65,6 +70,7 @@ public class CozinhaController {
 		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
@@ -74,6 +80,7 @@ public class CozinhaController {
 		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
+	@Override
 	@PutMapping("/{cozinhaId}")
 	public CozinhaDTO atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInput) {
 		Cozinha cozinhaAtual = cadastroCozinhaService.buscarCozinha(cozinhaId);
@@ -83,6 +90,7 @@ public class CozinhaController {
 		return cozinhaModelAssembler.toModel(cozinhaAtual);
 	}
 
+	@Override
 	@DeleteMapping(value = "/{cozinhaId}")
 	public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId) {
 		try {

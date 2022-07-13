@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.assembler.EstadoInputDisassembler;
 import com.algaworks.algafood.assembler.EstadoModelAssembler;
+import com.algaworks.algafood.controller.openapi.EstadoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
@@ -26,7 +27,7 @@ import com.algaworks.algafood.dto.input.EstadoInputDTO;
 
 @RestController
 @RequestMapping("/estado")
-public class EstadoController {
+public class EstadoController implements EstadoControllerOpenApi {
 
 	@Autowired
 	private EstadoRepository estadoRepository;
@@ -40,6 +41,7 @@ public class EstadoController {
 	@Autowired
 	private EstadoInputDisassembler estadoInputDisassembler;
 
+	@Override
 	@GetMapping
 	public List<EstadoDTO> listar() {
 		List<Estado> todosEstados = estadoRepository.findAll();
@@ -47,6 +49,7 @@ public class EstadoController {
 		return estadoModelAssembler.toCollectionModel(todosEstados);
 	}
 
+	@Override
 	@GetMapping("/{estadoId}")
 	public EstadoDTO buscar(@PathVariable Long estadoId) {
 		Estado estado = cadastroEstadoService.buscarEstado(estadoId);
@@ -54,6 +57,7 @@ public class EstadoController {
 		return estadoModelAssembler.toModel(estado);
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EstadoDTO adicionar(@RequestBody @Valid EstadoInputDTO estadoInput) {
@@ -64,6 +68,7 @@ public class EstadoController {
 		return estadoModelAssembler.toModel(estado);
 	}
 
+	@Override
 	@PutMapping("/{estadoId}")
 	public EstadoDTO atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoInputDTO estadoInput) {
 		Estado estadoAtual = cadastroEstadoService.buscarEstado(estadoId);
@@ -75,6 +80,7 @@ public class EstadoController {
 		return estadoModelAssembler.toModel(estadoAtual);
 	}
 
+	@Override
 	@DeleteMapping(value = "/{estadoId}")
 	public void excluir(@PathVariable Long estadoId) {
 

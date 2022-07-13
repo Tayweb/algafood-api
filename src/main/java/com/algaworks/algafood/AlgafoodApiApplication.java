@@ -10,8 +10,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.algaworks.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
+@OpenAPIDefinition
 public class AlgafoodApiApplication {
 	
 	public static void main(String[] args) {

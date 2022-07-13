@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.algaworks.algafood.assembler.FotoProdutoModelAssembler;
+import com.algaworks.algafood.controller.openapi.RestauranteProdutoFotoControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -33,8 +34,8 @@ import com.algaworks.algafood.dto.FotoProdutoDTO;
 import com.algaworks.algafood.dto.input.FotoProdutoInputDTO;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 
 	@Autowired
 	private CadastroProdutoService cadastroProdutoService;
@@ -48,6 +49,7 @@ public class RestauranteProdutoFotoController {
 	@Autowired
 	private FotoStorageService fotoStorageService;
 
+	@Override
 	@PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public FotoProdutoDTO atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@Valid FotoProdutoInputDTO fotoProdutoInputDTO) throws Exception {
@@ -68,17 +70,18 @@ public class RestauranteProdutoFotoController {
 		return fotoProdutoModelAssembler.toModel(fotoSalva);
 	}
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@Override
+	@GetMapping()
 	public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
 		return fotoProdutoModelAssembler.toModel(fotoProduto);
 	}
 
-	@GetMapping
-	public ResponseEntity<?> servirFoto(@PathVariable Long restauranteId,
-			@PathVariable Long produtoId, @RequestHeader(name = "accept") String acceptHeader)
-			throws HttpMediaTypeNotAcceptableException {
+	@Override
+	@GetMapping(produces = MediaType.ALL_VALUE)
+	public ResponseEntity<?> servirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+			@RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 		try {
 			FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
@@ -105,6 +108,13 @@ public class RestauranteProdutoFotoController {
 
 	}
 
+	@Override
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+		catalogoFotoProdutoService.excluir(restauranteId, produtoId);
+	}
+
 	private void verificarCompatibilidadeMediaType(MediaType mediaTypeFoto, List<MediaType> mediaTypesAceitas)
 			throws HttpMediaTypeNotAcceptableException {
 		boolean compativel = mediaTypesAceitas.stream()
@@ -114,12 +124,6 @@ public class RestauranteProdutoFotoController {
 			throw new HttpMediaTypeNotAcceptableException(mediaTypesAceitas);
 		}
 
-	}
-
-	@DeleteMapping
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
-		catalogoFotoProdutoService.excluir(restauranteId, produtoId);
 	}
 
 }

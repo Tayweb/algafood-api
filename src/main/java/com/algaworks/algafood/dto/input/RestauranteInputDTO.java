@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import com.algaworks.algafood.core.validation.TaxaFrete;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +16,11 @@ import lombok.Setter;
 @Getter
 public class RestauranteInputDTO {
 
+	@Schema(example = "Comida Caseira", required = true)
 	@NotBlank
 	private String nome;
 
+	@Schema(example = "10", required = true)
 	@NotNull
 	@TaxaFrete
 	private BigDecimal taxaFrete;

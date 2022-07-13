@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.assembler.PedidoInputDisassembler;
 import com.algaworks.algafood.assembler.PedidoModelAssembler;
+import com.algaworks.algafood.controller.openapi.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -35,7 +36,7 @@ import com.algaworks.algafood.infrastructure.repository.spec.PedidoSpecs;
 
 @RestController
 @RequestMapping(value = "/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
 	@Autowired
 	private PedidoRepository pedidoRepository;
@@ -56,6 +57,8 @@ public class PedidoController {
 //		return pedidoModelAssembler.toCollectionModel(todosPedidos);
 //	}
 
+	@Override
+
 	@GetMapping
 	public Page<PedidoDTO> pesquisar(PedidoFilter filtro, @PageableDefault(size = 2) Pageable pageable) {
 
@@ -69,6 +72,7 @@ public class PedidoController {
 		return pedidoPageDTO;
 	}
 
+	@Override
 	@GetMapping("/{codigoPedido}")
 	public PedidoDTO buscar(@PathVariable String codigoPedido) {
 		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
@@ -76,6 +80,7 @@ public class PedidoController {
 		return pedidoModelAssembler.toModel(pedido);
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public PedidoDTO adicionar(@Valid @RequestBody PedidoInputDTO pedidoInput) {
@@ -97,7 +102,7 @@ public class PedidoController {
 	private Pageable traduzirPageable(Pageable pageable) {
 		var mapeamento = Map.of("codigo", "codigo", "restaurante.nome", "restaurante.nome", "nomeCliente",
 				"cliente.nome", "valorTotal", "valorTotal");
-		
+
 		return PageableTranslator.translate(pageable, mapeamento);
 	}
 }

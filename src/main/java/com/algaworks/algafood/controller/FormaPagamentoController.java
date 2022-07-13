@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.assembler.FormaPagamentoInputDisassembler;
 import com.algaworks.algafood.assembler.FormaPagamentoModelAssembler;
+import com.algaworks.algafood.controller.openapi.FormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
@@ -29,7 +30,7 @@ import com.algaworks.algafood.dto.input.FormaPagamentoInputDTO;
 
 @RestController
 @RequestMapping("/formas-pagamento")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
 	@Autowired
 	private FormaPagamentoRepository formaPagamentoRepository;
@@ -43,6 +44,7 @@ public class FormaPagamentoController {
 	@Autowired
 	private FormaPagamentoInputDisassembler formaPagamentoInputDisassembler;
 
+	@Override
 	@GetMapping
 	public ResponseEntity<List<FormaPagamentoDTO>> listar() {
 		List<FormaPagamento> todasFormasPagamentos = formaPagamentoRepository.findAll();
@@ -53,6 +55,7 @@ public class FormaPagamentoController {
 
 	}
 
+	@Override
 	@GetMapping("/{formaPagamentoId}") 
 	public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long formaPagamentoId) {
 		FormaPagamento formaPagamento = cadastroFormaPagamento.buscarOuFalhar(formaPagamentoId);
@@ -62,6 +65,7 @@ public class FormaPagamentoController {
 		return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).body(formaPagamentoDTO);
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
@@ -72,6 +76,7 @@ public class FormaPagamentoController {
 		return formaPagamentoModelAssembler.toModel(formaPagamento);
 	}
 
+	@Override
 	@PutMapping("/{formaPagamentoId}")
 	public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId,
 			@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
@@ -84,6 +89,7 @@ public class FormaPagamentoController {
 		return formaPagamentoModelAssembler.toModel(formaPagamentoAtual);
 	}
 
+	@Override
 	@DeleteMapping("/{formaPagamentoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long formaPagamentoId) {

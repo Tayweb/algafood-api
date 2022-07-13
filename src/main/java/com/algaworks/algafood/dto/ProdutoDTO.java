@@ -2,6 +2,7 @@ package com.algaworks.algafood.dto;
 
 import java.math.BigDecimal;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +10,18 @@ import lombok.Setter;
 @Getter
 public class ProdutoDTO {
 
+	@Schema(example = "1")
 	private Long id;
-    private String nome;
-    private String descricao;
-    private BigDecimal preco;
-    private Boolean ativo;   
+
+	@Schema(example = "Lasanha de frango")
+	private String nome;
+
+	@Schema(example = "Macarrão, queijo, presuto, frango")
+	private String descricao;
+
+	@Schema(example = "30")
+	private BigDecimal preco;
+
+	@Schema(example = "true ou false")
+	private Boolean ativo;
 }

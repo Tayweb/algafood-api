@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.controller.openapi.EstatisticasControllerOpenApi;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import com.algaworks.algafood.domain.service.VendaReportService;
@@ -18,7 +19,7 @@ import com.algaworks.algafood.dto.VendaDiaria;
 
 @RestController
 @RequestMapping(path = "/estatisticas")
-public class EstatisticasController {
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
 	@Autowired
 	private VendaQueryService vendaQueryService;
@@ -26,6 +27,7 @@ public class EstatisticasController {
 	@Autowired
 	private VendaReportService vendaReportService;
 
+	@Override
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,
 			@RequestParam(required = false) String data) {

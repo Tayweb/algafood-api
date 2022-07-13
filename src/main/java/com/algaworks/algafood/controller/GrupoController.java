@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.assembler.GrupoInputDisassembler;
 import com.algaworks.algafood.assembler.GrupoModelAssembler;
+import com.algaworks.algafood.controller.openapi.GrupoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
@@ -25,8 +26,8 @@ import com.algaworks.algafood.dto.GrupoDTO;
 import com.algaworks.algafood.dto.input.GrupoInputDTO;
 
 @RestController
-@RequestMapping("/grupos")
-public class GrupoController {
+@RequestMapping("/grupo")
+public class GrupoController implements GrupoControllerOpenApi {
 
 	@Autowired
 	private GrupoRepository grupoRepository;
@@ -40,6 +41,7 @@ public class GrupoController {
 	@Autowired
 	private GrupoInputDisassembler grupoInputDisassembler;
 
+	@Override
 	@GetMapping
 	public List<GrupoDTO> listar() {
 		List<Grupo> todosGrupos = grupoRepository.findAll();
@@ -47,6 +49,7 @@ public class GrupoController {
 		return grupoModelAssembler.toCollectionModel(todosGrupos);
 	}
 
+	@Override
 	@GetMapping("/{grupoId}")
 	public GrupoDTO buscar(@PathVariable Long grupoId) {
 		Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -54,6 +57,7 @@ public class GrupoController {
 		return grupoModelAssembler.toModel(grupo);
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDTO adicionar(@RequestBody @Valid GrupoInputDTO grupoInput) {
@@ -64,6 +68,7 @@ public class GrupoController {
 		return grupoModelAssembler.toModel(grupo);
 	}
 
+	@Override
 	@PutMapping("/{grupoId}")
 	public GrupoDTO atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInputDTO grupoInput) {
 		Grupo grupoAtual = cadastroGrupo.buscarOuFalhar(grupoId);
@@ -75,6 +80,7 @@ public class GrupoController {
 		return grupoModelAssembler.toModel(grupoAtual);
 	}
 
+	@Override
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long grupoId) {
